@@ -1,0 +1,25 @@
+On 3/5/19, should be version 1.7, according to https://hub.docker.com/r/biobakery/workflows/tags
+singularity build bioBakery.sif docker://biobakery/workflows
+
+May 19 - fixing HUMANN2 by updating glpsol
+
+- make writeable container, install glpk, replace humann's glpsol and add so to the search path:
+
+singularity build --sandbox bioBakery docker://biobakery/workflows
+sudo /uufs/chpc.utah.edu/sys/installdir/singularity3/3.1.0/bin/singularity shell --writable bioBakery
+
+$ apt-get update
+$ apt-get install wget
+$ wget https://ftp.gnu.org/gnu/glpk/glpk-4.65.tar.gz
+$ tar xfz https://ftp.gnu.org/gnu/glpk/glpk-4.65.tar.gz
+$ cd glpk-4.65
+$ ./configure
+$ make
+$ make install
+$ cd /home/linuxbrew/.linuxbrew/Cellar/humann2/0.11.1/libexec/lib/python2.7/site-packages/humann2/quantify/MinPath/glpk-4.6/examples
+$ mv glpsol glpsol.org
+$ cp /usr/local/bin/glpsol .
+$ ln -s /usr/local/lib/libglpk.so.40 /home/linuxbrew/.linuxbrew/lib/
+
+sudo singularity build bioBakery.sif bioBakery/
+
